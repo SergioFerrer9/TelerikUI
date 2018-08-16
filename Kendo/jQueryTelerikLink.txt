@@ -1,0 +1,1 @@
+https://docs.telerik.com/kendo-ui/framework/datasource/crud#create-local

@@ -1,0 +1,96 @@
+﻿<table id="grid" class="table table-condensed table-striped table-bordered"></table>
+@section Scripts{
+    @Scripts.Render("~/Scripts/jquery.min.js ")
+    @Scripts.Render("~/Scripts/kendo.all.min.js ")
+    @Styles.Render("~/Content/kendo.common.min.css")
+    @Styles.Render("~/Content/kendo.default.min.css")
+
+
+    <script>
+
+        $(document).ready(function () {
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: "Consultas/ListarExtra",
+                    create: {
+                        "url": "/Persona/Insertar",
+                        "type": "POST",
+                        "contentType": "application/json"
+                    },
+                    update: {
+                        url: "/Persona/Modificar/",
+                        type: "POST",
+                        contentType: "application/json"
+
+                    },
+                    destroy: {
+                        url: "/Persona/Eliminar/",
+                        type: "POST",
+                        contentType: "application/json"
+                    },
+                    parameterMap: function (data, type) {
+
+                        if (type == "create" || type == "update" || type == "destroy") {
+
+                            return (JSON.stringify(data));
+                        }
+
+
+                    },
+                    dataType: "jsonp",
+
+                },
+                requestEnd: function (e) {
+                    var response = e.response;
+                    var type = e.type;
+                    if (type == "create" || type === "update" || type === "destroy") {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    }
+
+                },
+                pageSize: 10,
+                batch: false,
+                schema: {
+                    model: {
+                        id: "idC",
+                        fields: {
+                            idC: { editable: false, nullable: true },
+                            NombreC: { validation: { required: true } },
+                            ModeloC: { validation: { required: true } },
+                            NombreM: { validation: { required: true } },
+                            ModeloM: { validation: { required: true } }
+            
+                        }
+                    }
+                }
+
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                height: 550,
+                toolbar: ["create"],
+                groupable: true,
+                pageable: true,
+                editable: "inline",
+                columns: [
+                    { field: "idC", title: "Id C" },
+                    { field: "NombreC", title: "NombreC" },
+                    { field: "ModeloC", title: "ModeloC" },
+                    { field: "NombreM", title: "NombreM" },
+                    { field: "ModeloM", title: "ModeloM" },
+                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                ]
+            });
+
+            function onDDLChange(e) {
+                var element = e.sender.element;
+                var row = element.closest("tr");
+                var grid = $("#grid").data("kendoGrid");
+                var dataItem = grid.dataItem(row);
+                dataItem.set("idC", e.sender.value());
+            };
+
+        });
+    </script>
+}

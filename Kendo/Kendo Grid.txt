@@ -1,0 +1,51 @@
+<table id="grid" class="table table-condensed table-striped table-bordered"></table>
+@section Scripts{
+    @Scripts.Render("~/Scripts/jquery.min.js ")
+    @Scripts.Render("~/Scripts/kendo.all.min.js ")
+    @Styles.Render("~/Content/kendo.common.min.css")
+    @Styles.Render("~/Content/kendo.default.min.css")
+
+	
+ <script>
+
+        $(document).ready(function () {
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: "CancionNombreArtistaGenero/ListarDatos",
+                    dataType: "jsonp"                    
+                },               
+                pageSize: 10,
+                batch: false,
+                schema: {
+                    model: {
+                        id: "idCancion",
+                        fields: {
+                            idCancion: { editable: false, nullable: true },
+                            nombreCancion: { validation: { required: true } },
+                            nombreArtista: { validation: { required: true } },
+                            nombreArtista: { validation: { required: true } }
+                        }
+                    }
+                }
+            });
+
+            $("#t1").kendoGrid({
+                dataSource: dataSource,
+                pageable: true,
+                toolbar: ["create"],
+                columns: [
+                    { field: "idCancion", title: "Id" },
+                    { field: "nombreCancion", title: "Cancion" },
+                    { field: "nombreArtista", title: "Artista" },
+                    { field: "nombreGenero", title: "Genero" },
+                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                ],
+                editable: "inline"
+            });
+        });
+    </script>
+
+
+
+
+}
